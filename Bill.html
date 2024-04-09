@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+  <title>Invoice</title>
+  <style>
+    /* CSS styles for the invoice layout */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .invoice {
+      border: 1px solid #000;
+      padding: 20px;
+      width: 60%;
+      margin: 0 auto;
+    }
+
+    .billId {
+      font-weight: bold;
+      text-align: right;
+      /* Align header to the right */
+      /* margin-bottom: 5px; */
+    }
+
+    .inv {
+      text-align: center;
+    }
+
+    .customer-info {
+      margin-bottom: 10px;
+    }
+
+    .item-details {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .item-details th,
+    .item-details td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    .item-details th {
+      background-color: #f2f2f2;
+      text-align: left;
+    }
+
+    /* Decrease quantity input box size */
+    .item-details input[type="number"] {
+      width: 60px;
+      /* Adjust the width as needed */
+    }
+
+    .top {
+      display: flex;
+    }
+
+    .billId {
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg ">
+    <div class="container-fluid">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" href="index.html"
+            style="background-color: yellowgreen; border-radius: 5px; padding: 0.5rem 1rem;">HOME</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div id="inv" class="invoice">
+    <div class="header">
+      <h1 class="inv">Invoice</h1>
+      <div class="top">
+        <form>
+          <div class="form-group row">
+            <label for="input" class="col-sm-2 col-form-label">Name:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" style="width: 300px; padding: 3px;" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="input" class="col-sm-2 col-form-label">Address:</label>
+            <div class="col-sm-2">
+              <input type="text" class="form-control" id="inputPassword" style="width: 300px; padding: 3px;"
+                autocomplete="off">
+            </div>
+          </div>
+        </form>
+        <div class="billId">
+          <p>Bill ID: <span id="bill-id"></span></p>
+          <p>Bill Date: <span id="bill-date"></span></p>
+        </div>
+      </div>
+    </div>
+
+
+
+    <table class="item-details">
+      <thead>
+        <tr>
+          <th style="width: 300px;">Item Name</th>
+          <th style="width: 100px;">Price</th>
+          <th style="width: 100px;">Unit</th>
+          <th style="width: 100px;">Quantity</th>
+
+          <th style="width: 150px;">Amount</th>
+          <th style="width: 60px;">Action</th>
+        </tr>
+      </thead>
+      <tbody id="item-details-body">
+
+      </tbody>
+    </table>
+    <p style="text-align: right; padding-top: 15px; padding-right:80px;">Total Amount: <span id="total-amount"></span>
+    </p>
+    <p style="text-align: right; padding-top: -15px; padding-right:40px;">Amt Received: <input type="number"
+        style="width: 90px; border-radius:6px; " id="amt-received" onkeyup="AmountPaid()"><span></span></p>
+    <p style="text-align: right;padding-top: -15px; padding-right:80px;">Amt Left: <span id="left-amount"></span></p>
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+        aria-expanded="false">Confirmation</button> <span id="confirmation" style="font-weight: 600;"></span>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><a class="dropdown-item" onclick="confirm(this)">PAID</a></li>
+        <li><a class="dropdown-item" onclick="confirm(this)">DUE</a></li>
+      </ul>
+    </div>
+  </div>
+  <button type="button" class="btn btn-warning" onclick="print()"
+    style="position: absolute; right: 320px; margin-top: 10px;">Print</button>
+
+  <script>
+    // Populate current date for the bill date
+    var currentDate = new Date().toISOString().split('T')[0];
+    document.getElementById('bill-date').textContent = currentDate;
+    window.onload = function () {
+      itemsList();
+      func();
+      AmountPaid();
+      // document.getElementById('download').addEventListener("click", () => {
+      //   const invoice = this.document.getElementById('inv');
+      //   var opt = {
+      //     margin: 1,
+      //     filename: 'myFile.pdf',
+      //     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      //   }
+      //   html2pdf().from(invoice).set(opt).save();
+      // });
+    };
+    var total = 0;
+    function itemsList() {
+      var itemsTableBody = document.getElementById("item-details-body");
+      itemsTableBody.innerHTML = ""; // Clear existing content
+
+      var localStorageData = localStorage.getItem("objectsKey");
+
+      if (localStorageData) {
+        var items = JSON.parse(localStorageData);
+        items.forEach(function (item) {
+          var row = document.createElement("tr");
+          row.innerHTML = `
+          <td>${item.item_name}</td>
+        <td><input type="number" class="item-price" value="${item.price}" onKeyUp="updateTotal(this)" style=" width: 90%;border-radius:5px; border-width:1px;"></td>
+        <td>${item.unit}</td>
+        <td><input type="number" class="item-quantity" value="${item.quantity}" onKeyUp="updateTotal(this)" style="border-radius:6px;border-width:1px;width: 80%"></td>
+
+        <td class="item-total" >${item.price * item.quantity}</td>
+        <td>
+          <button type="button" class="btn btn-link delete-item ">
+            <i class="bi bi-trash "></i>
+          </button>
+        </td>
+      `;
+          itemsTableBody.appendChild(row);
+        });
+        var editButtons = document.querySelectorAll(".delete-item");
+        var data = JSON.parse(localStorage.getItem('objectsKey'));
+        editButtons.forEach(button => {
+          button.addEventListener('click', function () {
+            console.log('clicked');
+            var index = data.findIndex(item => {
+              return item.item_name === this.parentNode.parentNode.cells[0].textContent;
+            });
+            data.splice(index, 1);
+
+            // Update local storage with the modified 'data' array
+            localStorage.setItem('objectsKey', JSON.stringify(data));
+
+            // Optional: Remove the row from the table
+            this.parentNode.parentNode.remove();
+            func();
+          });
+        });
+      } else {
+        console.log("No data found in localStorage.");
+      }
+    }
+    function updateTotal(input) {
+      var row = input.parentNode.parentNode; // Get the parent row of the input
+      var price = parseFloat(row.querySelector(".item-price").value);
+      var quantity = parseFloat(row.querySelector(".item-quantity").value);
+      var total = price * quantity;
+      if (isNaN(total)) total = 0;
+      row.querySelector(".item-total").textContent = total.toFixed(2); // Update total in the row
+      func();
+    }
+    function func() {
+      var itemTotalElements = document.getElementsByClassName('item-total');
+      var totalAmount = 0;
+
+      for (var i = 0; i < itemTotalElements.length; i++) {
+        totalAmount += parseFloat(itemTotalElements[i].textContent);
+      }
+      document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
+      total = totalAmount;
+      AmountPaid();
+    }
+    function AmountPaid() {
+      var amountLeft = document.getElementById('amt-received').value;
+      console.log(amountLeft);
+      console.log(total);
+      document.getElementById('left-amount').textContent = (total - amountLeft).toFixed(2);
+    }
+
+    function print() {
+      localStorage.removeItem('objectsKey');
+      window.location.reload();
+    }
+
+    function confirm(input) {
+      document.getElementById('confirmation').textContent = input.innerText;
+    }
+
+
+  </script>
+
+</body>
+
+</html>
