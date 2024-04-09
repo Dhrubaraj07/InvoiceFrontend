@@ -175,6 +175,20 @@
                 `;
             searchResults.appendChild(row);
           });
+          var editButtons = document.querySelectorAll('.edit-btn');
+          editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+              var currentItem = data.find(item => {
+                console.log('Item Name:', item.item_name);
+                console.log('Parent node:', this.parentNode.parentNode.cells[0].textContent);
+                return item.item_name === this.parentNode.parentNode.cells[0].textContent;
+              });
+              console.log(currentItem);
+              var flag = parseInt(this.getAttribute('data-flag'));
+              if (flag === 1) editItem(JSON.stringify(currentItem));
+              else billItem(JSON.stringify(currentItem));
+            });
+          });
         });
     }
   </script>
