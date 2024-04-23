@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INVOICE</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* CSS styles for the invoice layout */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .invoice {
+      border: 1px solid #000;
+      padding: 20px;
+      width: 90%;
+      margin: 0 auto;
+    }
+
+    .billId {
+      font-weight: bold;
+      text-align: right;
+      /* Align header to the right */
+      /* margin-bottom: 5px; */
+    }
+
+    .inv {
+      text-align: center;
+    }
+
+    .customer-info {
+      margin-bottom: 10px;
+    }
+
+    .item-details {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .item-details th,
+    .item-details td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    .item-details th {
+      background-color: #f2f2f2;
+      text-align: left;
+    }
+
+    /* Decrease quantity input box size */
+    .item-details input[type="number"] {
+      width: 70px;
+    }
+
+    .top {
+      display: flex;
+    }
+
+    .billId {
+      flex: 1;
+    }
+    button{
+      margin-right: 10px;
+    }
+    @media print{
+      .btn{
+        display: none;
+      }
+      .invoice{
+        border: 0px;
+      }
+      .item-details th,
+    .item-details td {
+      border: none;
+    }
+    #confirm{
+      border: 0px;
+    }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="inv" class="invoice">
+    <div class="header">
+      <h1 class="inv">Invoice</h1>
+      <div class="top">
+        <form>
+          <div class="form-group row">
+            <label for="input" class="col-sm-2 col-form-label">Name:<span id="cust-name" style="font-weight: 600;"></span></label>
+            
+          </div>
+          <div class="form-group row">
+            <label for="input" class="col-sm-2 col-form-label">Ph:<span id="cust-ph" style="font-weight: 600;"></span></label>
+            
+          </div>
+        </form>
+        <div class="billId">
+          <p>Bill ID: <span id="bill-id"></span></p>
+          <p>Bill Date: <span id="bill-date"></span></p>
+        </div>
+      </div>
+    </div>
+
+
+
+    <table class="item-details">
+      <thead>
+        <tr>
+          <th style="width: 300px; ">Item Name</th>
+          <th style="width: 100px;">Price</th>
+          <th style="width: 80px;">Unit</th>
+          <th style="width: 50px;">Quantity</th>
+
+          <th style="width: 100px;">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="item-details-body">
+
+      </tbody>
+    </table>
+    <p style="text-align: right; padding-top: 15px; padding-right:15px;" class="dashed"><span Id="dash">________________</span>
+    <p style="text-align: right; padding-top: 15px; padding-right:25px;" >Total Amount: <span id="total-amount"></span>
+    </p>
+    <p style="text-align: right; padding-top: -15px; padding-right:25px;">Amt Received:<span id="amt-received"></span></p>
+    <p style="text-align: right;padding-top: -15px; padding-right:25px;">Amt Left:<span id="left-amount"></span></p>
+    <input type="text" id="confirm" class="form-control" style="width: 100px;background: greenyellow; font-weight: 600; text-align: center;">
+
+  </div>
+  <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+    <button id="download" type="button" class="btn btn-warning" onclick="pdf()">Print</button>
+    <button id="clear" type="button" class="btn btn-danger" onclick="clearLS()">Delete Bill</button>
+  </div>
+  <script src="../Js Files/invoice.js">
+  </script>
+</body>
+</html>

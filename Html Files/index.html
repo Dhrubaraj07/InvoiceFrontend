@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body{
+      /* background-image:url('../Images/vecteezy_abstract-dark-background-with-line-grid-gradient-color_13755473.jpg') ; */
+      /* background-position: left; */
+    /* background-repeat: no-repeat; */
+    /* background-size: cover;  */
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <form class="d-flex" id="searchForm">
+          <input class="form-control me-2" type="search" placeholder="Enter a item- PIPE, TANK, WATER PUMP"
+            aria-label="Search" id="searchInput" autocomplete="off" style="width: 600px; background-color: #f0f0f0;">
+        </form>
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item ">
+            <a class="nav-link active" aria-current="page" href="addItem.html"
+              style="background-color: yellowgreen; border-radius: 5px; padding: 0.5rem 1rem; margin-right: 10px; font-weight:400px;">Add
+              Item</a>
+          </li>
+
+          <li class="nav-item ">
+            <a class="nav-link active" aria-current="page" href="Bill.html" target="_blank"
+              style="font-family: Arial, Helvetica, sans-serif ; background-color: rgb(233, 93, 71); border-radius: 5px; padding: 0.5rem 1rem; color: white; font-weight:500;">Estimate</a>
+          </li>
+        </ul>
+        <a href="searchBill.html" target="_blank"><button class="btn btn-primary" >Search Bill</button></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col" style="width: 300px;">Item Name</th>
+          <th scope="col" style="width: 150px;">Purchase cost</th>
+          <th scope="col" style="width: 100px;">Unit</th>
+          <th scope="col" style="width: 200px;">Customer price</th>
+          <th scope="col" style="width: 180px;">Supervisor price</th>
+          <th scope="col" style="width: 100px;">Add To Bill</th>
+          <th scope="col" style="width: 100px;">Actions</th> 
+        </tr>
+      </thead>
+      <tbody id="searchResults"></tbody>
+    </table>
+  </div>
+  <script src="../Js Files/index.js"></script>
+</body>
+
+</html>

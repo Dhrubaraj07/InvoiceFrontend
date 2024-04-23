@@ -64,15 +64,16 @@
 
   <script>
     
-    
+    let ele=JSON.parse(localStorage.getItem('editElement'));
     window.onload = function() {
         // var item = JSON.parse(decodeURIComponent(localStorage.getItem('itemStore')));
-        document.getElementById('itemName').value = localStorage.getItem('item_name');
-        document.getElementById('purchaseCost').value = localStorage.getItem('item_purchase');
-        document.getElementById('unit').value = localStorage.getItem('item_unit');
-        document.getElementById('supervisorySell').value = localStorage.getItem('item_cus');
-        document.getElementById('customerSell').value = localStorage.getItem('item_sup');
-        // localStorage.clear();
+        
+        document.getElementById('itemName').value = ele.item_name;
+        document.getElementById('purchaseCost').value = ele.purchase;
+        document.getElementById('unit').value = ele.unit;
+        document.getElementById('supervisorySell').value = ele.supervisor;
+        document.getElementById('customerSell').value = ele.customer;
+        // localStorage.removeItem('editElement');
     };
 
 
@@ -94,7 +95,7 @@
         };
         console.log(data);
         // Send JSON data to backend URL
-        fetch('http://localhost:8080/editItem/'+ localStorage.getItem('item_id'), {
+        fetch('http://localhost:8080/editItem/'+ ele.item_id, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -105,7 +106,8 @@
             if (response.ok) {
                 console.log('Item added successfully');
                 document.getElementById('successMessage').style.display = 'block';
-                // Optionally, you can redirect to another page or perform other actions
+                localStorage.removeItem('editElement');
+                
             } else {
                 console.error('Failed to add item');
             }
@@ -120,7 +122,7 @@
       console.log(result);
       if (result!=true) return;
         // Make a DELETE request to the API endpoint
-        fetch('http://localhost:8080/deleteItem/' + localStorage.getItem('item_id'), {
+        fetch('http://localhost:8080/deleteItem/' +  ele.item_id, {
             method: 'DELETE'
         })
         .then(response => {
